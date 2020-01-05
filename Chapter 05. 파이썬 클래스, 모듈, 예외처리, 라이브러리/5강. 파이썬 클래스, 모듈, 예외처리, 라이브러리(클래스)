@@ -1,0 +1,397 @@
+Python
+
+Chapter05. 파이썬 날개 달기
+: 프로그래밍의 꽃 : "클래스 / 모듈 / 예외 처리 / 파이썬 라이브러리"
+
+05-1 클래스
+
+# 클래스는 왜 필요한가?
+: C언어에는 클래스라는 개념이 없다. (프로그램을 작성하는 과정에 있어서 필수적인 요소는 아니다.)
+> 단, 적재적소에 활용하면 프로그래머들이 개발하면서 큰 이득을 볼 수 있다.
+
+>>> result = 0
+>>> def add(num):
+	global result
+	result += num    # result = result + num
+	return result
+
+>>> print(add(3))
+3
+>>> print(add(4))
+7
+: 일단 global을 사용하여 결괏값을 유지했다.
+
+>>> result1 = 0
+>>> result2 = 0
+>>> def add1(num):
+	global result1
+	result1 += num
+	return result1
+	
+>>> def add2(num):
+	global result2
+	result2 += num
+	return result2
+
+>>> print(add1(3))
+3
+>>> print(add1(4))
+7
+>>> print(add2(3))
+3
+>>> print(add2(7))
+10
+: 각 결괏값을 유지하면서 계산하는 시스템을 만들었다.
+> 계산기1과 계산기2는 서로 영향을 주지 않는다는 사실을 알 수 있다.
+
+= 클래스 생성해서 작성해보기!
+>>> class Calculator:
+	def __init__(self):
+		self.result = 0
+	def add(self, num):
+		self.result += num
+		return self.result
+
+	
+>>> cal1 = Calculator()
+>>> cal2 = Calculator()
+>>> print(cal1.add(3))
+3
+>>> print(cal1.add(4))
+7
+>>> print(cal2.add(3))
+3
+>>> print(cal2.add(7))
+10
+
+=> cal1, cal2를 각 기능을 수행하는 '객체'라 부른다.
+
+>>> class Calculator:
+	def __init__(self):
+		self.result = 0
+	def sub(self, num):
+		self.result -= num
+		return self.result
+>>> cal3 = Calculator()
+>>> print(cal3.sub(2))
+-2
+
+※ "그럼 근본적으로 도대체 왜 클래스는 필요한가?"
+
+# 클래스와 객체
+: 클래스(class) : 똑같은 무엇인가를 계속해서 만들어 낼 수 있는 설계 도면(과자 틀)
+: 객체(object) : 클래스로 만든 피조물(과자 틀을 사용해 만든 과자)
+> 객체마다 고유한 성격을 가진다.
+-> 동일한 클래스로 만든 객체들은 서로 전혀 영향을 주지 않는다.
+
+=======================================================
+> 객체와 인스턴스의 차이
+: 클래스로 만든 객체를 '인스턴스'라고도 부른다.
+: a=Cookie() 이렇게 만든 a는 객체이다.
+					 a객체는 Cookie의 인스턴스이다.
+					 => 관계 위주로 설명할 경우, 인스턴스라 부른다!
+"a는 객체이다."
+"a는 Cookie의 인스턴스이다."
+=======================================================
+
+# 사칙연산 클래스 만들기
+: 덧셈, 뺄셈, 곱셈, 나눗셈
+
+= 클래스를 어떻게 만들지 먼저 구상하기!
+: 어떤 식으로 동작하게 할 것인지 미리 구상한 후에 생각한 것들을 하나씩 해결하면서 완성하는 것이 좋다!
+예) 사칙연산 클래스(FourCal)
+   : 두 수를 입력받는 메서드 : setdata 메서드
+   : 더하기 기능 : add 메서드
+   : 빼기 기능  : sub 메서드
+   : 곱하기 기능 : mul 메서드
+   : 나누기 기능 : div 메서드
+
+>>> a = FourCal()
+>>> a.setdata(4, 2)
+>>> print(a.add())
+6
+>>> orint(a.sub())
+2
+>>> print(a.mul())
+8
+>>> print(a.div())
+2
+
+= 클래스 구조 만들기
+: 동작하는 클래스 만들기!
+
+>>> class FourCal()
+		pass    # 아무것도 수행하지 않는 문법으로 임시로 작성할 때 주로 사용한다!
+>>>
+
+>>> a = FourCal()
+>>> type(a)
+<class '__main__.FourCal'>    # 객체 a의 타입은 FourCal 클래스이다.
+: 객체 a가 FourCal 클래스의 객체임을 알 수 있다.
+
+= 객체에 숫자 지정할 수 있게 만들기
+: 현재 a의 객체에 대한 정보는 아무것도 없는 상황이다. 우선, 계산될 두 수를 작성한다.
+
+>>> a.setdata(4, 2)
+
+>>> class FourCal:
+	def setdata(self, first, second):
+		self.first = first
+		self.second = second
+
+=> 클래스 안에 구현된 함수는 "메서드(method)"라 칭한다.
+
+=======================================================
+def 함수 이름(매개변수)
+	수행할 문장
+	...
+	
+def setdata(self, first, second):
+	self.first = first
+	self.second = second
+=======================================================
+
+1. setdata 메서드의 매개변수
+: self는 특별한 의미를 가진다. 
+
+[  a.setdata(4, 2)  ->  def setdata(self, first, second):  ]
+=> a : self / 4 : first / 2 : second
+
+=======================================================
+※ 관례적으로 첫 번째로 등장하는 매개변수는 self로 등록한다!!!
+: 자바는 첫 번째 매개변수가 필요하지 않다!!!
+=======================================================
+
+=======================================================
+> 메서드의 또 다른 호출 방법
+>>> a = FourCal()
+>>> FourCal.setdata(a, 4, 2)
+: '클래스 이름.메서드' 형태로 호출시에 객체 a를 첫 번째 매개변수 self에 꼭 전달해줘야 한다.
+
+>>> a = FourCal()
+>>> a.setdata(4, 2)
+: '객체.메서드' 형태로 호출시에 self를 반드시 생략해서 호출한다.
+=======================================================
+
+2. setdata 메서드의 수행문
+
+def setdata(self, first, second):    # 메서드의 매개변수
+	self.first = first
+	self.second = second
+	
+self.first = 4  <=>  a.first = 4
+self.second = 2  <=>  a.second = 2
+
+>>> a = FourCal()
+>>> a.setdata(4, 2)
+>>> print(a.first)
+4
+>>> print(a.second)
+2
+
+> a객체의 first 값은 b객체의 first 값에 영향 받지 않고 원래 값을 유지하고 있음을 확인할 수 있다.
+ (독립적인 값을 유지한다.)
+ 
+>>> a = FourCal()
+>>> b = FourCal()
+>>> a.setdata(4, 2)
+>>> b.setdata(3, 7)
+>>> id(a.first)    # a의 first 주소 값을 확인
+1839194944
+>>> id(b.first)    # b의 first 주소 값을 확인
+1839194928
+
+=======================================================
+- 완성본
+>>> class FourCal:
+	def setdata(self, first, second):
+		self.first = first
+		self.second = second
+=======================================================
+
+= 더하기 기능 만들기
+>>> a = FourCal()
+>>> a.setdata(4, 2)
+>>> print(a.add())
+6
+
+>>> class FourCal:
+	def setdata(self, first, second):
+		self.first = first
+		self.second = second
+	def add(self):
+		result = self.first + self.second
+		return result
+
+>>> a = FourCal()
+>>> a.setdata(4, 2)
+
+>>> print(a.add())
+6
+
+def add(self):
+	result = self.first + self.second
+	# result = a.first + a.second -> 4 + 2
+	return result
+	
+=======================================================
+-> 더하기, 곱하기, 나누기, 빼기 기능 만들기
+
+class FourCal:
+	def setdata(self, first, second):
+		self.first = first
+		self.second = second
+	def add(self):
+		result = self.first + self.second
+		return result
+	def mul(self):
+		result = self.first * self.second
+		return result
+	def div(self):
+		result = self.first / self.second
+		return result
+	def sub(self):
+		result = self.first - self.second
+		return result
+
+a = FourCal()
+b = FourCal()
+a.setdata(4, 2)
+b.setdata(3, 8)
+a.add()
+6
+a.mul
+8
+a.sub()
+2
+a.div()
+2
+b.add()
+11
+b.mul()
+24
+b.sub()
+-5
+b.div()
+0.375
+=======================================================
+
+
+# 생성자(Constructor)
+: 객체가 생성될 때 자동으로 호출되는 메서드를 의미한다.
+
+>>> a = FourCal()
+>>> a.add()
+Traceback (most recent call last):
+  File "<pyshell#11>", line 1, in <module>
+    a.add()
+  File "<pyshell#9>", line 6, in add
+    result = self.first + self.second
+AttributeError: 'FourCal' object has no attribute 'first'
+
+> setdata 메서드를 수행하지 않고 add 메서드를 수행하면 오류가 발생한다.
+=> 초깃값을 설정해야 할 필요가 있을 때는 setdata와 같은 메서드를 호출하여 초깃값을 설정하기보다는
+   "생성자를 구현하는 것"이 안전하다!!!
+   
+: "__init__"을 사용하여 메서드는 생성자가 된다.
+
+>>> class FourCal:
+		def __init__(self, first, second):
+			self.first = first
+			self.second = second
+		def setdata ...
+		...
+
+=> __init__ 는 setdata 메서드와 이름만 다르고 모든 게 동일하다!!!
+  (단, __init__을 사용했기에 생성자로 인식되어 객체가 생성되는 시점에 자동으로 호출된다.)
+  
+>>> a = FourCal(4, 2)
+>>> print(a.first)
+4
+>>> print(a.second)
+2
+
+
+# 클래스의 상속
+: 상속(inheritance) : 어떤 클래스를 만들 때 다른 클래스의 기능을 물려받을 수 있게 만들었다.
+> 기존 클래스는 그대로 놔둔 채 클래스의 기능을 확장시킬 때 주로 사용한다.
+
+>>> class MoreFourCal(FourCal):
+		pass
+		
+[  class 클래스 이름(상속할 클래스 이름)  ]
+
+>>> a = MoreFouCal(4, 2)
+>>> a.add()
+6
+>>> a.sub()
+2
+...
+
+=======================================================
+- 왜 상속을 해야 할까?
+상속을 사용하는 이유
+: 기존 클래스를 변경하지 않고 기능을 추가하거나 기존 기능을 변경하려고 할 때 사용한다.
+> 클래스를 굳이 사용하는 이유는?(*****)
+: 기존 클래스가 라이브러리 형태로 제공되거나 수정이 허용되지 않는 상황에서 사용한다.
+=======================================================
+
+>>> class MoreFourCal(FourCal):
+		def pow(self):
+			result = self.first **self.second
+			return result
+			
+a.MoreFouCal(4, 2)
+a.pow()
+16
+
+
+# 메서드 오버라이딩(Overriding, 덮어쓰기) (***)
+: 부모 클래스(상속할 클래스)에 있는 메서드를 동일한 이름으로 다시 만드는 것
+
+>>> a = FourCal(4, 0)
+>>> a.div()
+Traceback (most recent call last):
+  File "<pyshell#16>", line 1, in <module>
+    a.div()
+  File "<pyshell#14>", line 15, in div
+    result = self.first / self.second
+ZeroDivisionError: division by zero
+
+: 0으로 나눌 때 오류가 발생한다.
+
+>>> class SafeFourCal(FourCal):
+		def div(self):
+			if self.second == 0:    # 나누는 값이 0인 경우 숫자 0을 돌려주도록 수정
+				return 0
+			else:
+				return self.first / self.second
+				
+>>> a = SafeFourCal(4, 0)
+>>> a.div()
+0
+
+# 클래스 변수
+: 객체변수(= 다른 객체들에 영향받지 않고 독립적으로 그 값을 유지한다)와 성격이 다른 클래스 변수
+
+>>> class Family:
+		lastname = "김"
+>>> print(Family.lastname)    # [  클래스 이름.클래스 변수  ]
+김
+>>> a = Family()
+>>> print(a.lastname)
+김
+
+>>> Family.lastname = "박"
+>>> print(a.lastname)
+박
+
+=> 클래스 변수 값을 변경했더니 클래스로 만든 객체의 lastname 값도 모두 변경된다는 것을 확인할 수 있다.
+  (즉, 클래스 변수는 클래스로 만든 모든 객체에 공유된다!!!)
+: id 변수 값을 확인해도 모두 동일하다는 사실을 알 수 있다.
+
+=======================================================
+> 클래스에서 클래스 변수보다는 객체변수가 훨씬 중요하다!!!
+: 실무에서도 객체변수를 더 많이 사용한다
+=======================================================
+
