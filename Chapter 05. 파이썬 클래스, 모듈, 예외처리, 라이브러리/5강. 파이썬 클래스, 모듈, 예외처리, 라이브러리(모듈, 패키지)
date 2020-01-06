@@ -1,0 +1,118 @@
+Python
+
+Chapter05. 파이썬 날개 달기
+
+05-2 모듈
+: 모듈 : 함수나 변수 또는 클래스를 모아 놓은 파일
+= 파이썬 파일이라고도 불린다.
+
+# 모듈 만들기
+# mod.py
+def add(a, b): 
+	return a + b
+def sub(a, b):
+	return a - b
+
+# 모듈 불러오기
+>>> import mod1
+>>> print(mod1.add(3, 4))
+7
+>>> print(mod1.sub(4, 2))
+2
+
+: import : 이미 만들어 놓은 파이썬 모듈을 사용할 수 있게 해주는 명령어
+[  import 모듈 이름  ]
+
+: add, sub처럼 모듈 이름 없이 함수 이름만 쓰고 싶은 경우
+[  from 모듈 이름 import 모듈 함수  ]
+
+>>> from mod1 import add
+>>> add(3, 4)
+7
+
+from mod1 import add, sub
+
+from mod1 import *
+: * : '모든 것'이라는 의미를 내포하고 있다.
+> import *은 mod1.py의 모든 함수를 불러서 사용하겠다는 의미이다.
+
+
+# if __name__ == "__main__": 의 의미
+
+# mod1.py
+def add(a, b):
+	return a + b
+	
+def sub(a, b):
+	return a - b
+
+print(add(1, 4))    # 5
+print(sub(4, 2))    # 2
+
+
+C:\doit>python mod1.py
+5
+2
+
+C:\Users\pahkey>cd C:\doit
+C:\doit>python
+>>> import mod1
+5
+2
+
+# mod1.py
+def add(a, b):
+	return a + b
+
+def sub(a, b):
+	return a - b
+
+if __name__=="__main__":
+	print(add(1, 4))
+	print(sub(4, 2))
+	
+: 아무 결괏값이 출력되지 않는다.
+
+=======================================================
+= __name__변수란?
+: 파이썬이 내부적으로 사용하는 특별한 변수 이름
+mod1.py의 __name__변수에는 __main__값이 저장된다.
+: 파이썬 셸이나 다른 파이썬 모듈에서 mod1을 import할 경우에는 
+  mod1.pydml __name__변수에는 mod1.py의 모듈 이름 값 mod1이 저장된다.
+=======================================================
+
+
+05-3 패키지
+
+# 패키지란 무엇인가?
+: 패키지(packages) : 도트(.)를 사용하여 파이썬 모듈을 계층적(디렉터리 구조)으로 관리할 수 있게 도와준다.
+> 패키지 구조로 파이썬 프로그램을 만들면 공동 작업이나 유지 보수 과정에서 우위를 점할 수 있다.
+
+# 패키지 만들기
+= 패키지 기본 구성 요소 준비하기
+C:/doit/game/__init__.py
+C:/doit/game/sound/__init__.py
+C:/doit/game/sound/echo.py
+C:/doit/game/graphic/__init__.py
+C:/doit/game/graphic/render.py
+
+# echo.py
+def echo_test():
+	print("echo")
+	
+# render.py
+def render_test():
+	print("redner")
+
+# __init__.py의 용도
+: 해당 디렉터리가 패키지의 일부임을 알려주는 역할을 수행한다.
+
+
+# realtive 패키지
+
+#render.pu
+from game.soun.echo import echo_test
+def render_test():
+	print("render")
+	echo_test()
+	
