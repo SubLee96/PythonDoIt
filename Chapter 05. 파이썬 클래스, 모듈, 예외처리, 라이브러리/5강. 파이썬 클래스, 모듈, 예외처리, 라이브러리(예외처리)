@@ -1,0 +1,205 @@
+Python
+
+Chapter05. 파이썬 날개 달기
+
+05-4 예외처리
+: 프로그램을 만드는 과정에서 수많은 오류를 만나게 된다.
+> 때때로 오류를 무시하고 싶은 경우도 있다. try, except를 사용하여 예외적으로 오류를 처리한다.
+
+# 오류는 어떨 때 발생하는가?
+
+>>> f = open("나없는파일", r)
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+ FileNotFoundError: [Errno 2] No such file or directory: '나없는파일'
+: 파일이 없기에 파일을 열 수 없는 코드
+ 
+>>> 4 / 0
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+ ZeroDivisionError: division by zero
+: 4를 0으로 나누려하지만 불가능하다는 오류
+
+>>> a = [1, 2, 3]
+>>> a[4]
+Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+: a는 리스트 [1, 2, 3]인데 a[4]는 a리스트에서 얻을 수 없는 값이다. 
+
+# 오류 예외 처리 기법
+= try, except문
+: try블록 수행 중 오류가 발생하면 except블록이 수행된다.
+ (단, try블록에서 오류가 발생하지 않는다면 except블록은 수행되지 않는다.)
+ 
+=======================================================
+try:
+	...
+except [발생 오류[as 오류 메시지 변수]]:
+	...
+=======================================================
+
+[  except [발생 오류 [as 오류 메시지 변수]]:  ]
+
+1. try, except만 쓰는 방법
+: 오류 종류에 상관없이 except블록을 수행한다.
+
+=======================================================
+try:
+	...
+except:
+	...
+=======================================================
+
+2. 발생 오류만 포함한 except문
+: except문에 미리 정해 놓은 오류 이름과 일치할 때만 except블록 수행
+=======================================================
+try:
+	...
+except 발생 오류:
+	...
+=======================================================
+
+3. 발생 오류와 오류 메시지 변수까지 포함한 except문
+: 오류 메시지의 내용까지 알고 싶은 경우
+=======================================================
+try:
+	...
+except 발생 오류 as 오류 메시지 변수:
+	...
+=======================================================
+
+예)
+try:
+	4 / 0
+except ZeroDivisionError as e:
+	print(e)
+
+	
+division by zero
+
+
+= try ... finally
+: finally절은 try문 수행 도중 예외 발생 여부와 상관없이 항상 수행된다.
+: finally절은 사용한 리소스를 close해야 할 때에 많이 사용한다.
+
+f = open('foo.txt', 'w')
+try:
+	#무언가를 수행한다.
+finally:
+	f.close()
+> foo.txt 파일을 쓰기 모드로 연 후에 try문을 수행한 후 예외 발생 여부와 상관없이 finally절에서
+  f.close()로 열린 파일을 닫을 수 있다.
+  
+  
+= 여러 개의 오류 처리하기
+
+try:
+	...
+except 발생 오류 1:
+	...
+except 발생 오류 2:
+	...
+
+예1)
+try:
+	a = [1, 2]
+	print(a[3])
+	4/0
+except ZeroDivisionError:
+	print("0으로 나눌 수 없습니다.")
+except IndexError
+	print("인덱싱할 수 없습니다.")
+
+> 인덱싱 오류가 먼저 발생했기 때문에 4/0으로 발생되는 ZeroDivisionError 오류는 발생하지 않는다.
+
+
+try:
+	a = [1, 2]
+	print(a[3])
+	4/0
+except (ZeroDivisionError, IndexError) as e:
+	print(e)
+		
+list index out of range
+	
+> 함께 list index out of range도 같이 발생한다.	
+> 두 개 이상의 오류를 동시에 처리하기 위해서는 위와 같이 괄호를 사용한다.
+
+
+# 오류 회피하기
+: 프로그래밍을 하는 과정에서 특정 오류를 넘어가야하는 경우도 발생한다.
+
+try:
+	f = open("나없는파일", 'r')
+except FileNotFoundError:    # 파일이 없더라도 오류를 발생시키지 않고 통과한다.
+	pass
+
+> pass를 사용하여 오류를 그냥 회피하도록 작성!
+
+
+# 오류 일부러 발생시키기
+: raise 명령어를 사용해 오류를 강제로 발생시킬 수 있다.
+
+예)
+class Bird:
+	def fly(self):
+		raise NotImplementedError	# 꼭 작성되야 하는 부분이 구현되지 않았을 경우 일부러 오류를 
+									  일으키기 위해서 NotImplementedError를 사용한다.
+> fly함수를 구현하지 않은 상태로 fly함수 호출한다면??
+
+class Eagle(Bird):    # Eagle 클래스는 Bird 클래스를 상속 받음
+	pass
+
+eagle = Eagle()
+eagle.fly()
+
+> Eagle 클래스에서 fly함수를 구현하지 않았기 때문에 Bird 클래스의 fly함수가 호출된다.
+  그리고 raise문에 의해 NotImplementedError가 발생한다.
+  
+Traceback (most recent call last):
+  File "...", line 33, in <module>
+    eagle.fly()
+  File "...", line 26, in fly
+    raise NotImplementedError
+NotImplementedError
+
+
+# 예외 만들기
+: 프로그램 수랭 도중 특수항 경우에만 예외 처리를 하기 위해서 종종 예외를 만들어서 사용함.
+
+class MyError(Exception):
+	pass
+
+def say_nick(nick):
+	if nick == '바보':
+		raise MyError()
+	print(nick)
+
+say_nick("천사")
+say_nick("바보")
+
+-> 천사가 출력된 이후에 에러가 발생할 것이다.
+
+try:
+	say_nick("천사")
+	say_nick("바보")
+except MyError:
+	print("허용되지 않는 별명입니다.")
+	
+천사
+허용되지 않는 별명입니다.
+
+try:
+	say_nick("천사")
+	say_nick("바보")
+except MyError as e:
+	print(e)
+
+> print(e)로 오류 메시지가 출력되지 않는 것을 확인할 수 있다. 
+ : "__str__" 메서드를 구현해야 한다.
+ 
+class MyError(Exception):
+	def __str__(self):
+		return "허용되지 않는 별명입니다."
+
