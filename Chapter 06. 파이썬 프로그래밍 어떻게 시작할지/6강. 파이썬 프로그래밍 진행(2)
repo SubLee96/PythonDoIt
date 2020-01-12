@@ -1,0 +1,210 @@
+Python
+
+Chapter06. 파이썬 프로그래밍, 어떻게 시작해야 할까?
+
+06-4 간단한 메모장 만들기
+=======================================================
+필요한 기능은? 메모 추가하기, 메모 조회하기
+입력받는 값은? 메모 내용, 프로그램 실행 옵션
+출력하는 값은? memo.txt
+=======================================================
+
+1. 입력으로 받은 옵션과 메모를 출력하는 코드 입력
+
+# C:/doit/memo.py
+import sys
+
+option sys.argv[1]
+memo = sys.argv[2]
+
+print(option)
+print(memo)
+
+> sys.argv는 프로그램을 실행할 때, 입력된 값을 읽어 들일 수 있는 파이썬 라이브러리이다.
+: sys.argv[1]은 옵션 기능, sys.argv[2]는 메모 기능을 수행한다.
+
+2. memo.py를 작성했다면 
+C:\doit>python memo.py -a"Life is too short"
+-a
+Life is too short
+
+
+3. 입력으로 받은 메모를 파일에 쓰도록 코드를 변경하자!
+# C:/doit/memo.py
+import sys
+
+option = sys.argv[1]
+
+if option == '-a'
+	memo = sys.argv[2]
+	f = open('memo.txt', 'a')
+	f.write(memo)
+	f.write('\n')
+	f.close()
+	
+> 옵션이 -a인 경우에만 memo값을 읽어 memo.txt 파일에 그 값을 쓰도록 코드를 작성한다.
+: 메모에 한줄씩 추가되는 방식이기에 열기 모드 'a'를 사용했다.
+
+4. 
+C:\doit>python memo.py-a "Life is too short"
+C:\doit>python memo.py-a "You need Python"
+
+C:\doit>type memo.txt    # 메모에 기입되었는지 확인하기
+Life is too short
+You need python
+
+5. 작성한 메모를 출력하는 부분을 만들 차례!
+python memo.py -v
+
+# C:/doit/memo.py
+import sys
+
+option = sys.argv[1]
+
+if option == '-a':
+	memo = sys.argv[2]
+	f = open('memo.txt', 'a')
+	f.write(memo)
+	f.write('\n')
+	f.close()
+elif option == '-v':
+	f = open('memo.txt')
+	f.close()
+	print(memo)
+	
+6. 코드를 수정한 후에 명령 수행
+C:\doit>python memo.py-v
+Life is too short
+You need python
+
+
+06-5 탭을 4개의 공백으로 바꾸기
+: 문서 파일 안에 있는 탭(tab)을 공백(space) 4개로 바꾸어 주는 스크립트
+=======================================================
+필요한 기능은? 문서 파일 읽어 들이기, 문자열 변경하기
+입력받는 값은? 탭을 포함한 문서 파일
+출력하는 값은? 탭이 공백으로 수정된 문서 파일
+=======================================================
+
+1. tabto4.py 파일 만들기
+# C:/doit/tabto4.py
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+print(src)
+print(dst)
+
+2. 정상적으로 출력되는지 확인하기
+C:\doit>python tabto4.py a.txt b.txt
+a.txt
+b.txt
+
+
+3. 원본 파일인(탭을 포함하는 파일)인 a.txt를 작성
+Life	is	too		short
+You		need	python
+
+4. a.txt 파일을 읽어서 탭을 공백 4개로 변환할 수 있도록 코드를 변경
+# C:/doit/tabto4.py
+import sys
+
+src = sys.argv[1]
+src = sys.argc[2]
+
+f = open(src)
+tab_content = f.read()
+f.close()
+
+space_content = tab_content.replace("\t", " "*4)
+print(space_content)
+
+> 탭을 공백 4개로 변경하는 코드
+
+5. tabto4.py 확인하기
+C:\doit>python tabto4.py a.txt b.txt
+Life    is    too    short
+You    need    python
+
+6. b.txt파일에 저장할 수 있도록 프로그램 변경하기
+# C:/doit/tabto4.py
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+f = open(src)
+tab_content = f.read()
+f.close()
+space_content = tab_content.replace("\t", " "*4)
+f = open(dst, 'w')
+f.write(space_content)
+f.close()
+
+7. 프로그램 실행하여 확인하기
+C:\doit>python tabto4.py a.txt b.txt
+
+> b.txt 파일 안에 C:\doit 디렉터리가 생성된다.
+-> tab이 공백으로 변경된 상황을 육안으로 확인할 수 있다.
+
+
+06-6 하위 디렉터리 검색하기
+: 하위 모든 파일 중 파이썬 파일(*.py)만 출력해주는 프로그램을 만들려면???
+
+1. sub_dir_search.py 파일 작성하기
+# C:/doit/sub_dir_search.py
+
+def search(dirname):
+	print(dirname)
+	
+search("C:/")
+
+> search 함수를 만들고 시작 디렉터리를 입력받도록 코드를 작성함.
+
+2. 디렉터리에 파일을 검색할 수 있도록 소스를 변경하기
+# C:/doit/sub_dir_search.py
+import os
+
+def search(dirname):
+	filenames = os.listdir(dirname)
+	for filename in filenames:
+		full_filename = os.path.join(dirname, filename)
+		print(full_filename)
+		
+search("C:/")
+
+3. C:/ 디렉터리에 있는 파일들 중 확장자가 .py인 파일만을 출력하도록 코드를 변경
+# C:/doit/sub_dir_search.py
+import os
+
+def search(dirname):
+	filenames = os.listdir(dirname)
+	for filename in filenames:
+		full_filename = os.path.join(dirname, filename)
+		ext = os.path.splitext(full_filename)[-1]
+		if ext == '.py':
+			print(full_filename)
+			
+search("C:/")
+
+4. 
+# C:/doit/sub_dir_search.py
+import os
+
+	filenames = os.listdir(dirname)
+	for filename in filenames:
+		full_filename = os.path.join(dirname, filename)
+def search(dirname):
+		ext = os.path.splitext(full_filename)[-1]
+		if ext == '.py':
+			print(full_filename)
+		else:
+			ext = os.path.splitext(full_filename)[-1]
+			if ext == '.py':
+				print(full_filename)
+	except PermissionError:
+		pass
+		
+search("C:/")
+
